@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-_0=ylks=v8udin(ypol%*3j*k*3cs7b%6d!(4=l*b$y5#=v&nh
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'jayasimaecommerce.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
