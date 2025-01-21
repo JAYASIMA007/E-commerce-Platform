@@ -1,0 +1,20 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block title %} Login {% endblock title %}
+
+{% block main-content %}
+ <div class="container my-3 shadow">
+   <h2 class="text-center"><u>Login Form</u></h2>
+   <form class="form-group" action="" method="POST" accept-charset="utf-8" novalidate>
+     {% if messages %}
+      {% for message in messages %}
+       <small {% if message.tag %} class='alert alert-{{message.tag}}' {% endif %}>{{message}}</small>
+      {% endfor %}
+     {% endif %}
+     {% csrf_token %}
+     {{form.as_p}}
+     <input type="submit" class='btn btn-primary my-2' value="Login" />
+     <a href="{% url 'registration' %}" class='btn btn-danger my-2'>Sign Up</a>
+   </form>
+ </div>
+{% endblock main-content %}

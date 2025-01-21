@@ -1,0 +1,16 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block title %}Empty Cart{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+ <div class="row">
+  <h1 class="text-center mb-5"><u>Your Flipkart Cart</u></h1><hr />
+  <div class="col text-center">
+  <h4 class='mb-4 text-center'><u>Cart Products</u></h4>
+  <h3 class="text-center my-2">Nothing To Show Add Products In Cart!</h3>
+  <hr />
+  <center><img class="img-fluid img-thumnail" src="{% static 'myapp/images/emptycart.png' %}" alt="" /></center>
+  </div>
+ </div>
+ </div>
+{% endblock main-content %}

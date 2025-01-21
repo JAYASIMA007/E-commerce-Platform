@@ -1,0 +1,45 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block title %}Buy Now{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+  <div class="row">
+    
+    <div class="col-sm-4 my-4">
+      <h3>Welcome {{request.user|capfirst}}</h3>
+      <div class="list-group">
+        <a href="{% url 'profile' %}" class="list-group-item list-group-item-action active" aria-current="true">Profile
+        </a>
+        <a href="{% url 'address' %}" class="list-group-item list-group-item-action">Address
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-7 offset-sm-1 my-2">
+      <div class="row">
+        {% if adrs %}
+        {% for ad in adrs %}
+        <div class="col-sm-6">
+          <div class="card my-2">
+            <div class="card-item text-center my-2">
+              <h5><u>Address {{forloop.counter}}</u></h5>
+              <p><b>Name-</b> {{ad.name}}</p>
+              <p><b>locality-</b> {{ad.locality}}</p>
+              <p><b>City-</b> {{ad.city}}</p>
+              <p><b>State-</b> {{ad.state}}</p>
+              <p><b>Pin Code-</b> {{ad.zipcode}}</p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <h3 class="text-center">Nothing To Show Please Fill Profile Details!</h3>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock main-content %}
+
+{% block cart %}
+ {{cart|length}}
+{% endblock cart %}

@@ -1,0 +1,36 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block title %} Home {% endblock title %}
+
+{% block main-content %}
+<div class="container-fluid my-4">
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="list-group">
+        <a href="{% url 'mobile' %}" class="list-group-item list-group-item-action active" aria-current="true">All Mobiles</a>
+        <a href="{% url 'mobiledetails' 'Redmi' %}" class="list-group-item list-group-item-action">Redmi</a>
+        <a href="{% url 'mobiledetails' 'Samsung' %}" class="list-group-item list-group-item-action">Samsung</a>
+        <a href="{% url 'mobiledetails' 'Above' %}" class="list-group-item list-group-item-action">Above 10000</a>
+        <a href="{% url 'mobiledetails' 'Below' %}" class="list-group-item list-group-item-action">Below 10000</a>
+      </div>
+    </div>
+    <div class="col-sm-7 offset-sm-1">
+      <p>Product details</p>
+      <div class="row">
+        {% for mobile in mobiles %}
+        <div class="col-sm-6 my-2">
+          <a href="{% url 'productdetails' mobile.id %}"><img class="img-fluid img-thumnail" src="{{mobile.product_image.url}}" alt="" /></a>
+           <p><b>Product Brand:</b> {{mobile.brand}}</p>
+           <h4>Rs. {{mobile.discounted_price}} <small class="fw-light text-decoration-line-through">{{mobile.selling_price}}</small></h4><br />
+           <form class="d-inline" action="/addtocart" method="get" accept-charset="utf-8">
+           <input type="hidden" name="prod_id" value="{{mobile.id}}" />
+           <button type="submit" class='btn btn-primary shadow'>Add To Cart</button>
+   </form>
+           <a href="" class="btn btn-danger shadow">Buy Now</a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock main-content %}

@@ -1,0 +1,17 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block title %} Registration {% endblock title %}
+
+{% block main-content %}
+ <div class="container my-3 shadow">
+   <h2 class="text-center"><u>Registration Form</u></h2>
+   <form class="form-group" action="" method="post" accept-charset="utf-8" novalidate>
+     {% csrf_token %}
+     {% for fm in form %}
+      {{fm.label_tag}} {{fm}} {{fm.errors|striptags}}
+     {% endfor %}
+     <input type="submit" class='btn btn-primary my-2' value="Submit" />
+     <a href="{% url 'login' %}" class='btn btn-danger my-2'>Login</a>
+   </form>
+ </div>
+{% endblock main-content %}
