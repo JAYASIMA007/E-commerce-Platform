@@ -23,5 +23,6 @@ urlpatterns = [
   path('addcartminus', views.cart_icon_minus, name='addcartminus'),
   path('address', views.user_Address, name='address'),
   path('checkout', views.Checkout, name='checkout'),
+  path('mark-order-received/', views.mark_order_received, name='mark_order_received'),
   
   ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

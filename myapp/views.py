@@ -190,15 +190,26 @@ def RemoveCart(request):
   
 # Payment Done
 def user_payment(request):
-  if request.method == 'GET':
-    user = request.user
-    custid = request.GET.get('custid')
-    customer = Customer.objects.get(id=custid)
-    carts = Cart.objects.filter(user=user)
-    for ct in carts:
-      PlacedOrder(user=user, customer=customer, product=ct.product, quantity=ct.quantity).save()
-      ct.delete()
-  return redirect('/order')
+    if request.method == 'GET':
+        user = request.user
+        custid = request.GET.get('custid')
+        customer = Customer.objects.get(id=custid)
+        
+        # Check if it's a buy now purchase
+        if request.GET.get('buy_now'):
+            prod_id = request.GET.get('prod_id')
+            product = Product.objects.get(id=prod_id)
+            PlacedOrder(user=user, customer=customer, 
+                       product=product, quantity=1).save()
+        else:
+            # Handle cart checkout
+            carts = Cart.objects.filter(user=user)
+            for ct in carts:
+                PlacedOrder(user=user, customer=customer, 
+                          product=ct.product, quantity=ct.quantity).save()
+                ct.delete()
+                
+    return redirect('order')
   
 # Address Function
 def user_Address(request):
@@ -233,23 +244,68 @@ def user_Profile(request):
   
 # Checkout Function
 def Checkout(request):
-  user = request.user
-  address = Customer.objects.filter(user=user)
-  cart = Cart.objects.filter(user=user)
-  amount = 0.0
-  shippedprice = 70.0
-  totalamount = 0.0
-  user = request.user
-  allcart = [p for p in Cart.objects.all() if user == request.user]
-  print(allcart)
-  for ct in allcart:
-    amount = ct.quantity * ct.product.discounted_price
-    totalamount += amount
-  finalamount=totalamount+shippedprice
-  context = {'address':address, 'cart': cart, 'totalamount':totalamount}
-  return render(request, 'myapp/checkout.html', context)
-  
-  
-  
-  
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    user = request.user
+    address = Customer.objects.filter(user=user)
+    
+    # Check if it's a direct buy or cart checkout
+    prod_id = request.GET.get('prod_id')
+    
+    if prod_id:  # Direct buy flow
+        product = Product.objects.get(id=prod_id)
+        cart = [{
+            'product': product,
+            'quantity': 1,
+            'total_cost': product.discounted_price
+        }]
+        amount = product.discounted_price
+    else:  # Cart checkout flow
+        cart_items = Cart.objects.filter(user=user)
+        if not cart_items.exists():
+            messages.warning(request, 'Your cart is empty!')
+            return redirect('showcart')
+            
+        # Calculate cart totals
+        cart = []
+        amount = 0.0
+        for item in cart_items:
+            item_total = item.quantity * item.product.discounted_price
+            cart.append({
+                'product': item.product,
+                'quantity': item.quantity,
+                'total_cost': item_total
+            })
+            amount += item_total
+    
+    # Redirect if no shipping address exists
+    if not address.exists():
+        messages.warning(request, 'Please add a shipping address first!')
+        return redirect('profile')
+    
+    shipping_price = 70.0
+    total_amount = amount + shipping_price
+    
+    context = {
+        'address': address,
+        'cart': cart,
+        'amount': amount,
+        'shipping_price': shipping_price,
+        'totalamount': total_amount,
+        'is_buy_now': bool(prod_id)  # Flag to identify if it's buy now
+    }
+    
+    return render(request, 'myapp/checkout.html', context)
+
+
+def mark_order_received(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        order = PlacedOrder.objects.get(id=order_id)
+        order.status = 'Received'
+        order.save()
+        messages.success(request, 'Order received successfully!')
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'})
   
