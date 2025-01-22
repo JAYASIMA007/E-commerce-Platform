@@ -91,6 +91,8 @@ STATUS_CHOICE = (
   ('Shipped', 'Shipped'),
   ('Delivered', 'Delivered'),
   ('Cancel', 'Cancel'),
+  ('Received', 'Received'),
+
   )
   
 class PlacedOrder(models.Model):

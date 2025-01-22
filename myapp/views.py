@@ -248,8 +248,16 @@ def Checkout(request):
   finalamount=totalamount+shippedprice
   context = {'address':address, 'cart': cart, 'totalamount':totalamount}
   return render(request, 'myapp/checkout.html', context)
-  
-  
-  
+
+
+def mark_order_received(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        order = PlacedOrder.objects.get(id=order_id)
+        order.status = 'Received'
+        order.save()
+        messages.success(request, 'Order received successfully!')
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'})
   
   
